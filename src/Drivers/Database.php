@@ -16,6 +16,12 @@ class Database implements AuditDriver
     {
         $implementation = Config::get('audit.implementation', \OwenIt\Auditing\Models\Audit::class);
 
+        $dataForDb = $model->toAudit();
+
+        if (empty($dataForDb['old_values']) && empty($dataForDb['new_values'])) {
+            return new \OwenIt\Auditing\Models\Audit;
+        }
+
         return call_user_func([$implementation, 'create'], $model->toAudit());
     }
 
